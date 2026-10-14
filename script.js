@@ -1,61 +1,57 @@
 let currentImageIndex = 0;
-const totalImages = document.querySelectorAll(".image").length;
 let autoplayTimerId;
 
+const AUTOPLAY_INTERVAL_MS = 3000;
 const imagesList = document.querySelectorAll(".image");
 const previousEl = document.querySelector("#previous");
 const nextEl = document.querySelector("#next");
 const countEl = document.querySelector("#count");
 
-const getNextImage = (currentImageIndex) => {
-  const nextImage = (currentImageIndex + 1) % totalImages;
-  return nextImage;
+const goTo = (targetIndex) => {
+  targetIndex = (targetIndex + imagesList.length) % imagesList.length;
+
+  currentImageIndex = targetIndex;
+
+  updateUI();
 };
 
-const getPreviousImage = (currentImageIndex) => {
-  const previousImage = (currentImageIndex + totalImages - 1) % totalImages;
-  return previousImage;
-};
-
-const updateUI = (currentImageIndex) => {
-  imagesList.forEach((image) => {
-    image.classList.remove("is-active");
+const updateUI = () => {
+  imagesList.forEach((image, imageIndex) => {
+    image.classList.toggle("is-active", imageIndex === currentImageIndex);
   });
 
-  imagesList[currentImageIndex].classList.add("is-active");
-
-  countEl.textContent = `${currentImageIndex + 1} / ${totalImages}`;
+  countEl.textContent = `${currentImageIndex + 1} / ${imagesList.length}`;
 };
 
 const onPreviousClick = () => {
-  currentImageIndex = getPreviousImage(currentImageIndex);
-  updateUI(currentImageIndex);
+  goTo(currentImageIndex - 1);
 };
 
 const onNextClick = () => {
-  currentImageIndex = getNextImage(currentImageIndex);
-  updateUI(currentImageIndex);
+  goTo(currentImageIndex + 1);
 };
 
 const resetAutoplay = () => {
   clearInterval(autoplayTimerId);
 
-  autoplayTimerId = setInterval(onNextClick, 3000);
+  autoplayTimerId = setInterval(onNextClick, AUTOPLAY_INTERVAL_MS);
 };
 
 const init = () => {
   resetAutoplay();
-  updateUI(currentImageIndex);
+  goTo(currentImageIndex);
 };
 
-previousEl.addEventListener("click", () => {
-  onPreviousClick();
-  resetAutoplay();
-});
+if (imagesList.length > 0 && previousEl && nextEl) {
+  previousEl.addEventListener("click", () => {
+    onPreviousClick();
+    resetAutoplay();
+  });
 
-nextEl.addEventListener("click", () => {
-  onNextClick();
-  resetAutoplay();
-});
+  nextEl.addEventListener("click", () => {
+    onNextClick();
+    resetAutoplay();
+  });
 
-init();
+  init();
+}
