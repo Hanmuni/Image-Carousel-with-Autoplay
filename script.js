@@ -8,9 +8,7 @@ const nextEl = document.querySelector("#next");
 const countEl = document.querySelector("#count");
 
 const goTo = (targetIndex) => {
-  targetIndex = (targetIndex + imagesList.length) % imagesList.length;
-
-  currentImageIndex = targetIndex;
+  currentImageIndex = (targetIndex + imagesList.length) % imagesList.length;
 
   updateUI();
 };
@@ -42,7 +40,7 @@ const init = () => {
   goTo(currentImageIndex);
 };
 
-if (imagesList.length > 0 && previousEl && nextEl) {
+if (imagesList.length > 0 && previousEl && nextEl && countEl) {
   previousEl.addEventListener("click", () => {
     onPreviousClick();
     resetAutoplay();
